@@ -19,6 +19,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\Intl\Countries;
 use Symfony\Component\Intl\Intl;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -60,12 +61,10 @@ class PhoneNumberType extends AbstractType
 
             $countryChoices = array();
 
-            foreach (Intl::getRegionBundle()->getCountryNames() as $region => $name) {
-                if (false === isset($countries[$region])) {
-                    continue;
+            foreach($countries as $code => $id){
+                if(Countries::exists($code)){
+                    $countryChoices[sprintf('%s (+%s)',Countries::getAlpha3Name(Countries::getAlpha3Code($code))  , $id)] = $code;
                 }
-
-                $countryChoices[sprintf('%s (+%s)', $name, $countries[$region])] = $region;
             }
 
             $transformerChoices = array_values($countryChoices);
